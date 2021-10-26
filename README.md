@@ -14,3 +14,4 @@ https://www.npmjs.com/package/@emotion/styled
 
 https://www.npmjs.com/package/@emotion/react
 
+https://www.npmjs.com/package/firebase
