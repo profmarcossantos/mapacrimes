@@ -27,7 +27,7 @@ function App() {
   const handleLembreme = (e) => {
     setLembreme(e.target.checked)
 
-    if (e.target.checked == true) {
+    if (e.target.checked === true) {
       storageSave("email", email)
       storageSave("password", password)
     } else {
