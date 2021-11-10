@@ -13,16 +13,26 @@ export default function Menu() {
 
     return (
         <Grid container spacing={1}>
-            <Grid item xs={3}>
-                <Button fullWidth variant="outlined">Cadastro de Crimes</Button>
+            <Grid item xs={2}>
+                <Button
+                    onClick={() => history.push("/home")}
+                    fullWidth variant="outlined">Home</Button>
             </Grid>
-            <Grid item xs={3}>
-                <Button fullWidth variant="outlined">Visualizar Crimes</Button>
+
+            <Grid item xs={2}>
+                <Button
+                    onClick={() => history.push("/crimes")}
+                    fullWidth variant="outlined">Cadastro de Crimes</Button>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
+                <Button
+                    onClick={() => history.push("/crimeslista")}
+                    fullWidth variant="outlined">Visualizar Crimes</Button>
+            </Grid>
+            <Grid item xs={2}>
                 <Button fullWidth variant="outlined">Amigos</Button>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
                 <Button fullWidth variant="outlined" onClick={efetuarLogoff}>Logoff</Button>
             </Grid>
         </Grid>

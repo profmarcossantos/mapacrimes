@@ -1,5 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"
+import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+
 
 import { storageSave, storageRemove, storageGet } from './Storage'
 
@@ -13,7 +16,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const firebase = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
+const db = getFirestore();
 const auth = getAuth();
 
 
@@ -42,6 +46,51 @@ export const logoff = () => {
     });
   })
 }
+
+
+export const saveCrimes = (crime) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await addDoc(collection(db, "crimes"), crime);
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export const deleteCrimes = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await deleteDoc(doc(db, 'crimes', id));
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+
+export const getCrimes = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "crimes"));
+      let dados = []
+      querySnapshot.forEach((doc) => {
+        dados.push({
+          id: doc.id,
+          endereco: doc.data().endereco,
+          descricao: doc.data().descricao
+        })
+      });
+      resolve(dados)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+
 
 
 export const isAuthenticated = () => storageGet("TOKEN_KEY") !== null;

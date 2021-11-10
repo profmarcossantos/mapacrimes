@@ -1,9 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { isAuthenticated } from './services/Firebase'
 import Login from './views/Login'
 import Home from './views/Home'
+import Crimes from './views/Crimes'
+import CrimeLista from './views/CrimeLista'
 import Menu from './components/Menu'
+
 
 function App() {
 
@@ -29,6 +32,9 @@ function App() {
       <Switch>
         <Route path="/" exact={true} component={Login} />
         <PrivateRoute path="/home" component={Home} />
+        <PrivateRoute path="/crimes" component={Crimes} />
+        <PrivateRoute path="/crimeslista" component={CrimeLista} />
+        
         <Route path="*" component={Login} />
       </Switch>
     </BrowserRouter>
