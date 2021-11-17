@@ -30,9 +30,6 @@ export default function Menu() {
                     fullWidth variant="outlined">Visualizar Crimes</Button>
             </Grid>
             <Grid item xs={2}>
-                <Button fullWidth variant="outlined">Amigos</Button>
-            </Grid>
-            <Grid item xs={2}>
                 <Button fullWidth variant="outlined" onClick={efetuarLogoff}>Logoff</Button>
             </Grid>
         </Grid>

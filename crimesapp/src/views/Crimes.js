@@ -4,12 +4,21 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { saveCrimes } from '../services/Firebase';
 import { useHistory } from "react-router-dom";
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Collapse from '@mui/material/Collapse';
+
+import Geocode from "react-geocode";
+Geocode.setApiKey("Api do Google");
+
 
 export default function Crimes() {
     let history = useHistory();
     const [endereco, setEndereco] = useState("")
     const [descricao, setDescricao] = useState("")
-
+    const [msg, setMsg] = useState("")
+    const [open, setOpen] = React.useState(false);
 
     const save = async () => {
 
@@ -18,10 +27,12 @@ export default function Crimes() {
             descricao: descricao
         }
         try {
-            await saveCrimes(objeto)
+            await saveCrimes(objeto, Geocode)
             history.push("/crimeslista")
         } catch (error) {
-            console.log(error)
+            setMsg(error)
+            setOpen(true)
+
         }
     }
 
@@ -29,7 +40,30 @@ export default function Crimes() {
         <div>
             <h1>Cadastro de Crimes</h1>
             <Grid container spacing={1}>
-
+                <Grid item xs={4}></Grid>
+                <Grid item xs={4}>
+                    <Collapse in={open}>
+                        <Alert
+                            severity="error"
+                            action={
+                                <IconButton
+                                    aria-label="close"
+                                    color="inherit"
+                                    size="small"
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                >
+                                    <CloseIcon fontSize="inherit" />
+                                </IconButton>
+                            }
+                            sx={{ mb: 2 }}
+                        >
+                            {msg}
+                        </Alert>
+                    </Collapse>
+                </Grid>
+                <Grid item xs={4}></Grid>
                 <Grid item xs={6}>
                     <Grid container spacing={1}>
                         <Grid item xs={12}>

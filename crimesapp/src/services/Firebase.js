@@ -1,18 +1,14 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"
 import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 
-import { storageSave, storageRemove, storageGet } from './Storage'
 
+import { storageSave, storageRemove, storageGet } from './Storage'
 const firebaseConfig = {
-  apiKey: "AIzaSyCrPU5-oXCVw2jMMlweWcnQl_jrLlTcups",
-  authDomain: "mapacrimes.firebaseapp.com",
-  projectId: "mapacrimes",
-  storageBucket: "mapacrimes.appspot.com",
-  messagingSenderId: "860403545620",
-  appId: "1:860403545620:web:543b317244114ff7641901"
+  //dados de config de vcs
+
 };
 
 // Initialize Firebase
@@ -30,7 +26,24 @@ export const login = (email, password) => {
       })
       .catch((error) => {
         storageRemove("TOKEN_KEY")
-        reject(error)
+        let erro = error.code
+        if (erro === "auth/wrong-password")
+          reject("Usuário ou Senha Inválidos")
+        else
+          reject("Algo deu errado!")
+      })
+  })
+}
+
+
+export const sigin = (email, password) => {
+  return new Promise((resolve, reject) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        resolve("Usuário Registrado!")
+      })
+      .catch(() => {
+        reject("Usuário já inserido no banco!")
       })
   })
 }
@@ -48,11 +61,26 @@ export const logoff = () => {
 }
 
 
-export const saveCrimes = (crime) => {
+export const saveCrimes = (crime, Geocode) => {
   return new Promise(async (resolve, reject) => {
     try {
-      await addDoc(collection(db, "crimes"), crime);
-      resolve()
+      console.log(crime)
+      // descobrir a lat, lng do endereço informado
+
+      Geocode.fromAddress(crime.endereco).then(
+        async (response) => {
+          const { lat, lng } = response.results[0].geometry.location;
+          crime.lat = lat
+          crime.lng = lng
+          await addDoc(collection(db, "crimes"), crime);
+          resolve()
+        },
+        (error) => {
+          reject("Endereço incorreto!")
+        }
+      );
+
+
     } catch (error) {
       reject(error)
     }
@@ -80,7 +108,9 @@ export const getCrimes = () => {
         dados.push({
           id: doc.id,
           endereco: doc.data().endereco,
-          descricao: doc.data().descricao
+          descricao: doc.data().descricao,
+          lat: doc.data().lat,
+          lng: doc.data().lng,
         })
       });
       resolve(dados)
